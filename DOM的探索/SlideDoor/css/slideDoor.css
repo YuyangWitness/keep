@@ -1,0 +1,11 @@
+#container{
+	height: 478px;
+	margin: 0 auto;
+	position: relative;
+	overflow: hidden;
+}
+
+#container img{
+	position: absolute;
+	left: 0
+}
