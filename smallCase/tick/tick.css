@@ -1,0 +1,68 @@
+body{
+	margin: 0;
+	padding: 0;
+}
+.box{
+	width: 300px;
+	height: 300px;
+	border: 1px solid black;
+	border-radius: 50%;
+	position: absolute;
+	left: 300px;
+	top: 100px;
+}
+.point{
+	display: block;
+	width: 2px;
+	height: 10px;
+	position: absolute;
+	left: 50%;
+	top: 0;
+	background: black;
+	transform-origin: center 150px;
+	margin-left: -2px;
+
+}
+.hPoint{
+	width: 5px;
+	height: 15px;
+	margin-top:;
+}
+.hPoint strong{
+	position: absolute;
+	top: 20px;
+}
+.hour{
+	width: 15px;
+	height: 70px;
+	background: black;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -7px;
+	margin-top: -70px;
+	transform-origin: center bottom;
+	
+}
+.min{
+	width: 10px;
+	height: 90px;
+	position: absolute;
+	background: red;
+	left: 50%;
+	top:50%;
+	margin-top: -90px;
+	margin-left: -5px;
+	transform-origin: center bottom;
+}
+.second{
+	width: 5px;
+	height: 130px;
+	position: absolute;
+	background: blue;
+	left: 50%;
+	top:50%;
+	margin-top: -130px;
+	margin-left: -3px;
+	transform-origin: center bottom;
+}

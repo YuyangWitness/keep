@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="tick.css">
+	<script type="text/javascript" src="tick.js"></script>
+</head>
+<body>
+	<div class="box">
+		<div class="hour"></div>
+		
+		<div class="min"></div>
+
+		<div class="second"></div>
+	</div>
+</body>
+<script type="text/javascript">
+	
+	window.onload = function(){
+		/*
+			自制时钟
+		*/
+		let box = document.querySelector(".box");
+		let hour = document.querySelector(".hour");
+		let min = document.querySelector(".min");
+		let second = document.querySelector(".second");
+
+		
+		new tick({
+			el: box,
+			hour,
+			min,
+			second
+		})
+		
+	}
+</script>
+</html>
