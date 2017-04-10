@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--学习nodeName-nodeValue-->
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div id="container">学习nodeName-nodeValue</div>
+	<script type="text/javascript">
+		let Div = document.getElementById("container");
+		console.log(Div.nodeName + "/" + Div.nodeValue); //DIV/null
+
+		let attribute = Div.attributes[0];
+		console.log(attribute.nodeName + "/" + attribute.nodeValue);  //id/container
+
+		let text = Div.childNodes[0];
+		console.log(text.nodeName + "/" + text.nodeValue);  //#text/学习nodeName-nodeValue
+
+		let comment = document.childNodes[1];
+		console.log(comment.nodeName + "/" + comment.nodeValue);  //#comment/学习nodeName-nodeValue
+
+		let doctype = document.doctype;
+		console.log(doctype.nodeName + "/" + doctype.nodeValue); //html/null
+
+		let frg = document.createDocumentFragment();
+		let li = document.createElement("li");
+		li.innerHTML = "hello world";
+		frg.appendChild(li);
+
+		let body = document.getElementsByTagName("body")[0];
+		console.log(body);
+		body.insertBefore(frg,Div);
+		console.log(frg.nodeName + "/" + frg.nodeValue); //#document-fragment/null
+	</script>
+</body>
+</html>

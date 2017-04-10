@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		body{
+			margin: 0;
+			padding: 0;
+		}
+		.box{
+			position: absolute;
+			left: 0;
+			right: 0;
+			width: 200px;
+			height: 200px;
+			background: red;
+		}
+	</style>
+	<script type="text/javascript">
+		class Drag{
+			constructor(options) {
+				if(!options){
+					throw new Error("please set options");
+					return;
+				}
+				if(!options.el){
+					throw new Error("please set el");
+					return;
+				}
+				let index = options.index || 0;
+				this.Div = document.querySelectorAll(options.el)[index];
+				let winWidth = document.documentElement.clientWidth;
+				let winHeight = document.documentElement.clientHeight;
+				let defaultConfig = {
+					limit: false,
+					left: 0,
+					right: winWidth - this.Div.offsetWidth,
+					top: 0,
+					bottom: winHeight - this.Div.offsetHeight
+				}
+
+				this.Config = Object.assign(defaultConfig,options);
+				
+				console.log(this.Config);
+				this.disx = 0;
+				this.dixy = 0;
+				this.fnDown();
+				
+			}
+
+			fnDown(){
+				this.Div.onmousedown = function(ev){
+					ev = ev || window.event;
+					
+					this.disx = ev.clientX - this.Div.offsetLeft;
+					this.disy = ev.clientY - this.Div.offsetTop;
+
+					this.fnMove();
+					this.fnUp();
+				}.bind(this)
+			}
+			fnMove(){
+				document.onmousemove = function(ev){
+					ev = ev || window.event;
+					let l = ev.clientX - this.disx;
+					let t = ev.clientY - this.disy;
+					this.Div.style.left = l + "px";
+					this.Div.style.top = t + "px";
+
+					if(this.Config.limit){
+						if(l <= this.Config.left){
+						
+							this.Div.style.left = this.Config.left + "px";
+						}
+						if(l >= this.Config.right){
+							this.Div.style.left = this.Config.right + "px";
+						}
+						if(t <= this.Config.top){
+							this.Div.style.top = this.Config.top + "px";
+						}
+						if(t >= this.Config.bottom){
+							this.Div.style.top = this.Config.bottom + "px";
+						}
+					}
+					
+
+					
+				}.bind(this)
+			}
+			fnUp(){
+				document.onmouseup = function(ev){
+					document.onmousemove = null;
+					document.onmouseup = null;
+				}.bind(this)
+			}
+		}
+		window.onload = function(){
+			new Drag({
+				el: ".box",
+				limit: true,
+				left: 10,
+				top: 10
+			})
+		}
+	</script>
+</head>
+<body>
+	<div class="box"></div>
+</body>
+</html>
