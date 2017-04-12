@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
 	<title>Document</title>
 	<style type="text/css">
 		.div1{
 			font-size:20px;		
-			transform: rotate3d(1,0,0,5deg);	
+			transform: rotate3d(1,0,0,40deg);	
 		}
 		
+		.div2{
+			font-size:20px;		
+			transform: rotate3d(1,0,0,-40deg);	
+		}
 	</style>
 </head>
 <body>
@@ -16,27 +21,67 @@
 	<div class="div1">
 		<span>hello</span>		
 	</div>
-	<input type="button" name="" value="rotate" id="rotate">
+
+	<div class="div2">
+		<span>hello</span>		
+	</div>
+	
 	
 </body>
 <script type="text/javascript">
 	window.onload = function(){
-		let rotate = document.querySelector("#rotate");
+		
 		let div1 = document.querySelector(".div1");
-		let angle = 10;
-		rotate.onclick = function(){
-			let rotateStyle = getStyle(div1,"transform");
-			if(angle === 100){
-				return;
+		let angleT = 0;
+		let angleD = 360;				
+		let disY = 0;
+
+		document.addEventListener("touchstart",function(e){
+			e = e || window.event;					
+			disY = e.touches[0].pageY;
+
+		},false)
+
+		document.addEventListener("touchmove",function(e){
+
+			
+			e = e || window.event;
+			let rotateStyle = getStyle(div1,"transform");			
+			let nowY = e.touches[0].pageY;
+
+			if(angleT > 90){
+					angleT = 90;
 			}
-			if(rotateStyle === "none"){
-				div1.style.transform = `rotate3d(1,0,0,${angle}deg)`;
+
+			if(nowY < disY){
+				
+				if(rotateStyle === "none"){
+					div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
+				}else{
+					div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
+				}
+				
+				angleT = angleT + 3;
+				
+				disY = nowY;
+
 			}else{
-				div1.style.transform = `rotate3d(1,0,0,${angle}deg)`;
+				if(angleT < -90){
+					angleT = -90;
+				}
+
+				if(rotateStyle === "none"){
+						div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
+					}else{
+						div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
+					}
+					
+					angleT = angleT - 3;
+				
+				disY = nowY;
 			}
 			
-			angle = angle + 10;
-		}
+		},false);
 
 		function getStyle(el,attr){
 			if(document.defaultView.getComputedStyle){
