@@ -5,90 +5,121 @@
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
 	<title>Document</title>
 	<style type="text/css">
-		.div1{
-			font-size:20px;		
-			transform: rotate3d(1,0,0,40deg);	
+		.my-picker{
+			width:100%;
+			height: 30%;
+			position: fixed;
+			bottom: 0;
+			font-size: 2em;
+			overflow: hidden;
 		}
+		.my-picker span{
+			display: block;
+			text-align: center;
 		
-		.div2{
-			font-size:20px;		
-			transform: rotate3d(1,0,0,-40deg);	
 		}
 	</style>
-</head>
-<body>
-	
-	<div class="div1">
-		<span>hello</span>		
-	</div>
+	<script type="text/javascript">
+		window.onload = function(){
+			function Picker(options){
+				this.el = document.querySelectorAll(options.el)[0];
+				this.data = options.data;
+				this.init()
 
-	<div class="div2">
-		<span>hello</span>		
-	</div>
-	
-	
-</body>
-<script type="text/javascript">
-	window.onload = function(){
-		
-		let div1 = document.querySelector(".div1");
-		let angleT = 0;
-		let angleD = 360;				
-		let disY = 0;
-
-		document.addEventListener("touchstart",function(e){
-			e = e || window.event;					
-			disY = e.touches[0].pageY;
-
-		},false)
-
-		document.addEventListener("touchmove",function(e){
-
-			
-			e = e || window.event;
-			let rotateStyle = getStyle(div1,"transform");			
-			let nowY = e.touches[0].pageY;
-
-			if(angleT > 90){
-					angleT = 90;
 			}
 
-			if(nowY < disY){
+			Picker.prototype.init = function(){
 				
-				if(rotateStyle === "none"){
-					div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
-				}else{
-					div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
-				}
+				let fragMent = document.createDocumentFragment();
 				
-				angleT = angleT + 3;
-				
-				disY = nowY;
+				let boxH = this.el.clientHeight;
+				let transformStyle = (boxH - 50)/2;
+				let fragment = document.createDocumentFragment();
+				for(let i = 0; i < this.data.length; i++){
+					
+					let Span = document.createElement("span");
 
-			}else{
-				if(angleT < -90){
-					angleT = -90;
+					Span.innerHTML = this.data[i];
+				
+					Span.style.transform = `translate(0,${transformStyle}px) rotate3d(1,0,0,${i*25}deg)`;
+				
+					fragment.appendChild(Span);
 				}
 
-				if(rotateStyle === "none"){
-						div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
+				this.el.appendChild(fragment);
+
+			}
+
+			Picker.prototype.fnStart(){
+				document.addEventListener("touchstart",function(e){
+					e = e || window.event;					
+					disY = e.touches[0].pageY;
+
+				},false)
+			}
+
+			Picker.prototype.fnMove(){
+				document.addEventListener("touchmove",function(e){
+
+					
+					e = e || window.event;
+					let rotateStyle = getStyle(div1,"transform");			
+					let nowY = e.touches[0].pageY;
+
+					if(angleT > 90){
+							angleT = 90;
+					}
+
+					if(nowY < disY){
+						
+						if(rotateStyle === "none"){
+							div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
+						}else{
+							div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
+						}
+						
+						angleT = angleT + 3;
+						
+						disY = nowY;
+
 					}else{
-						div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
+						if(angleT < -90){
+							angleT = -90;
+						}
+
+						if(rotateStyle === "none"){
+								div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
+							}else{
+								div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
+							}
+							
+							angleT = angleT - 3;
+						
+						disY = nowY;
 					}
 					
-					angleT = angleT - 3;
-				
-				disY = nowY;
-			}
-			
-		},false);
+				},false);
 
-		function getStyle(el,attr){
-			if(document.defaultView.getComputedStyle){
-				let style = document.defaultView.getComputedStyle(el,null);
-				return style[attr];
+			}
+
+			new Picker({
+				el: ".my-picker",
+				data: ["北京","上海","深圳","南昌"]
+			})
+
+
+			function getStyle(el,attr){
+				if(document.defaultView.getComputedStyle){
+					let style = document.defaultView.getComputedStyle(el,null);
+					return style[attr];
+				}
 			}
 		}
-	}
-</script>
+	</script>
+</head>
+<body>
+	<div class="my-picker">
+		
+	</div>
+</body>
 </html>
