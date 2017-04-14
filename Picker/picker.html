@@ -12,6 +12,7 @@
 			bottom: 0;
 			font-size: 2em;
 			overflow: hidden;
+			background: grey;
 		}
 		.my-picker span{
 			display: block;
@@ -24,8 +25,8 @@
 			function Picker(options){
 				this.el = document.querySelectorAll(options.el)[0];
 				this.data = options.data;
-				this.init()
-
+				this.init();
+				this.fnStart();
 			}
 
 			Picker.prototype.init = function(){
@@ -50,55 +51,89 @@
 
 			}
 
-			Picker.prototype.fnStart(){
-				document.addEventListener("touchstart",function(e){
-					e = e || window.event;					
-					disY = e.touches[0].pageY;
+			Picker.prototype.getTransform = function(el){
 
-				},false)
+				let rsTransform = getStyle(el,"transform").split(",");
+
+				let rsAngle = null;
+
+				let rsTranslate = null;
+
+				console.log(rsTransform);
+
+				if(rsTransform.length > 6){
+
+				 	rsAngle = 180*Math.asin( rsTransform[6] )/ Math.PI;
+
+					rsTranslate = rsTransform[13];
+
+				}else{
+
+					rsAngle = 180*Math.asin( rsTransform[4] )/ Math.PI;
+
+					rsTranslate = rsTransform[5].slice(0,-1);
+
+				}
+									
+				return {rsAngle,rsTranslate};
 			}
 
-			Picker.prototype.fnMove(){
-				document.addEventListener("touchmove",function(e){
+			Picker.prototype.fnStart = function(el){	
 
-					
+				document.addEventListener("touchstart",function(e){
+					e = e || window.event;					
+					this.disY = e.touches[0].pageY;
+
+					this.fnMove(el);
+				}.bind(this),false);
+
+
+				
+			}
+
+			Picker.prototype.fnMove = function(el) {
+
+				let angleT = parseInt(this.getTransform(el).rsAngle);
+
+				let transformStyle = parseInt(this.getTransform(el).rsTranslate);
+				
+				document.addEventListener("touchmove",function(e){
+	
 					e = e || window.event;
-					let rotateStyle = getStyle(div1,"transform");			
+							
 					let nowY = e.touches[0].pageY;
 
 					if(angleT > 90){
-							angleT = 90;
+						angleT = 90;
 					}
 
-					if(nowY < disY){
+					if(nowY < this.disY){
 						
-						if(rotateStyle === "none"){
-							div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
-						}else{
-							div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
-						}
-						
+						transformStyle = transformStyle - 5;
+
 						angleT = angleT + 3;
 						
-						disY = nowY;
+						el.style.transform = `translate(0,${transformStyle}px) rotate3d(1,0,0,${angleT}deg)`;
+						
+								
+						
+						this.disY = nowY;
 
-					}else{
+					}else if(nowY > this.disY){
 						if(angleT < -90){
 							angleT = -90;
 						}
-
-						if(rotateStyle === "none"){
-								div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
-							}else{
-								div1.style.transform = `rotate3d(1,0,0,${angleT}deg)`;
-							}
-							
-							angleT = angleT - 3;
 						
-						disY = nowY;
+						transformStyle = transformStyle + 5;
+						
+						angleT = angleT - 3;
+						
+						el.style.transform = `translate(0,${transformStyle}px) rotate3d(1,0,0,${angleT}deg)`;
+
+						this.disY = nowY;
 					}
 					
-				},false);
+				}.bind(this),false);
 
 			}
 

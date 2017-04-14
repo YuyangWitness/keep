@@ -13,7 +13,7 @@
 		}
 		.div1 span{
 			font-size:2em;		
-			transform: rotate3d(1,0,0,40deg);
+			transform: rotate3d(1,0,0,90deg);
 		}
 		
 	</style>
@@ -87,6 +87,9 @@
 				return style[attr];
 			}
 		}
+
+		let rs = getStyle(document.querySelector(".div1 span"),"transform");
+		console.log(rs);
 	}
 </script>
 </html>
