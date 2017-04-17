@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	<title>Document</title>
+
+	<style type="text/css">
+	body{
+		margin: 0;
+	}
+	ul{
+		margin:0;padding:0;
+	}
+	.picker{
+		width: 100%;
+		height: 135px;
+		position: relative;
+	}
+	.picker_ul{
+		position: relative;
+		list-style: none;
+		height: 100%;
+		width: 100%;
+		overflow:hidden;
+		z-index:1;
+
+	}
+	.picker_ul li{
+		text-align:center;
+		font-size:1.1em;
+		position: absolute;
+		text-align: center;
+		right:50%;
+		top:60px;
+		transition: transform 1s;
+	}
+	.picker .picker_line{
+		width: 100%;
+		height: 30px;
+		position: absolute;
+		top:50%;
+		margin-top: -15px;
+		border-top: 1px solid #aaa;	 
+		border-bottom: 1px solid #aaa;
+	}
+	.picker .picker_panel{
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		left: 0;
+		top: 0;
+		z-index: 2;
+		background: -webkit-linear-gradient(top,rgb(255, 255, 255) 0,rgba(255, 255, 255,0.5) 40%,rgba(255, 255, 255,0) 41%,rgba(255, 255, 255,0) 56%,rgba(255, 255, 255,0.5) 55%,rgb(255, 255, 255) 100%);
+	}
+	</style>
+</head>
+<body>
+	<div class="picker">
+		<ul class="picker_ul">
+	    
+	      
+      	</ul>
+      	<div class="picker_panel"></div>
+      	<div class="picker_line"></div>
+	</div>
+	 
+</body>
+<script type="text/javascript">
+	class Picker{
+		constructor(options){
+			this.el = document.querySelectorAll(options.el)[0];
+			this.data = options.data;
+			this.touch = document.querySelector(options.touch);
+			this.nowData = [];
+			this.hIndex = 0;
+			this.lIndex = 2;
+			this.init();
+			this.fnStart();
+			
+		}
+
+		init(){
+			let rotateAngle = 0;
+			let liFragMent = document.createDocumentFragment();
+			for(let i = 0; i < 5 && rotateAngle >= -72; i++){
+
+				this.nowData[i] = this.data[i];
+
+				let Li = document.createElement("li");
+
+				Li.innerHTML = this.data[i];
+
+				Li.style.transform = `rotateX(${rotateAngle}deg) translateZ(48px)`;
+
+				liFragMent.appendChild(Li);
+
+				rotateAngle = rotateAngle - 36;
+			}
+
+			this.el.appendChild(liFragMent);
+		}
+
+		fnStart(){
+			
+			this.touch.addEventListener("touchstart", e => {
+
+				this.disY = e.touches[0].pageY;
+
+				this.fnMove();
+
+				console.log(this.disY);
+
+			},false);
+
+		}
+
+		fnMove(){
+			
+			this.touch.addEventListener("touchmove", e => {
+
+				let nowY = e.touches[0].pageY;
+
+				if(nowY < this.disY){	
+
+					this.lIndex++;
+
+					if(this.data[this.lIndex] !== undefined){		
+
+						this.nowData.push(this.data[this.lIndex]);	//数组后面添加
+
+					}
+					
+
+					if(this.lIndex > 4 && this.nowData.length > 3){
+
+						this.nowData.shift();	//数组头压出栈
+
+					}
+
+
+
+					this.PickerTransformUp(this.nowData);
+					
+					this.disY = nowY;
+
+				}else if(nowY > this.disY){
+				
+					this.disY = nowY;
+				}
+
+				return;
+			},false)
+		}
+
+		PickerTransformUp(arry){
+
+			let Lis = this.el.getElementsByTagName("li");
+			
+			//数组有五个元素的替换情况
+
+			if(this.lIndex < this.data.length + 2){
+
+				for(let i = 0; i < Lis.length; i++){
+
+					let transformLi = this.getTransform(Lis[i]);
+
+					Lis[i].style.transform = `rotateX(${transformLi.reAnglePase+36}deg) translateZ(48px)`;
+
+				}
+
+			}
+
+			
+
+			if(Lis.length == 5 && arry.length == 5){
+				
+				this.el.removeChild(Lis[0]);
+
+
+				let Li = document.createElement("li");
+
+				Li.innerHTML = this.data[this.lIndex];
+
+				Li.style.transform = `rotateX(${-72}deg) translateZ(48px)`;
+
+				this.el.appendChild(Li);
+
+			}else if(Lis.length < 5 && this.lIndex < this.data.length){
+
+				let Li = document.createElement("li");
+
+				Li.innerHTML = this.data[this.lIndex];
+
+				Li.style.transform = `rotateX(${-72}deg) translateZ(48px)`;
+
+				this.el.appendChild(Li);
+
+			}else if(arry.length < 5 && arry.length >= 3 && Lis.length > 3){
+
+				this.el.removeChild(Lis[0]);
+
+			}
+			
+			
+			
+			
+			
+
+		
+			
+		}
+
+		getTransform(el){
+
+			let rsTransform = getStyle(el,"transform").split(",");
+
+			let rsAngle = null;
+
+			let rsTranslate = null;
+
+			let reAnglePase = null
+
+			if(rsTransform.length > 6){
+
+			 	rsAngle = 180*Math.asin( rsTransform[6] )/ Math.PI;
+
+			 	reAnglePase = parseInt(rsAngle);
+
+				rsTranslate = rsTransform[13];
+
+			}else{
+
+				rsAngle = 180*Math.asin( rsTransform[4] )/ Math.PI;
+
+				rsTranslate = rsTransform[5].slice(0,-1);
+
+			}
+								
+			return {reAnglePase,rsTranslate};
+		}
+	}
+
+	function getStyle(el,attr){
+		if(document.defaultView.getComputedStyle){
+			let style = document.defaultView.getComputedStyle(el,null);
+			return style[attr];
+		}
+	}
+
+	window.onload = function(){
+		new Picker({
+			el: ".picker_ul",
+			data: [1,2,3,4,5,6,7,8],
+			touch: ".picker"
+		})
+	}
+</script>
+</html>
