@@ -58,7 +58,7 @@ class tick{
 		let millSecond = this.Config.date.getMilliseconds();
 			//console.log(millSecond);
 		
-		this.Config.hour.style.transform = `rotate(${h*30+m/60*6}deg)`;
+		this.Config.hour.style.transform = `rotate(${h*30+m/60*30}deg)`;
 		this.Config.min.style.transform = `rotate(${m*6+s/60*6}deg)`;
 		this.Config.second.style.transform = `rotate(${s*6 + millSecond/1000*6}deg)`;
 	}
